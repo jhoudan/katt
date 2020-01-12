@@ -1,5 +1,5 @@
-{ mkDerivation, aeson, base, bytestring, foldl, mime-mail
-, mime-mail-ses, stdenv, string-conversions, text, turtle
+{ mkDerivation, aeson, base, bytestring, mime-mail, mime-mail-ses
+, stdenv, string-conversions, text, turtle
 }:
 mkDerivation {
   pname = "katt";
@@ -8,8 +8,8 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    aeson base bytestring foldl mime-mail mime-mail-ses
-    string-conversions text turtle
+    aeson base bytestring mime-mail mime-mail-ses string-conversions
+    text turtle
   ];
   license = "unknown";
   hydraPlatforms = stdenv.lib.platforms.none;
