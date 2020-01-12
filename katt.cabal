@@ -1,0 +1,16 @@
+cabal-version:       >=1.10
+
+name:                katt
+version:             1.0.0
+author:              jhoudan
+maintainer:          jerom.houdan@gmail.com
+build-type:          Simple
+extra-source-files:  CHANGELOG.md
+
+executable katt
+  main-is:             Main.hs
+  hs-source-dirs:      src/
+  build-depends:       base >=4.12 && <4.13
+                     , foldl
+                     , turtle
+  default-language:    Haskell2010
