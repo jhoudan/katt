@@ -1,0 +1,8 @@
+{
+  "from": "verified-sender-address@lorem.com",
+  "to": ["receiver.1@lorem.com", "receiver.2@lorem.com"],
+  "url": "https://www.url_to_be_checked.com",
+  "awsAccessKeyId": "XXXXXXXXXXXXXXXXXXXX",
+  "awsSecretAccess": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "region": "us-east-1"
+}
