@@ -16,8 +16,8 @@ import            Data.String.Conversions (cs)
 import            Control.Monad (when)
 import qualified  Control.Foldl as Fold
 
-import            Network.Mail.Mime
-import            Network.Mail.Mime.SES
+import            Network.Mail.Mime (simpleMail', Mail, Address(..))
+import            Network.Mail.Mime.SES (renderSendMailSESGlobal, SES(..))
 
 data Config = Config { from             :: Text
                      , to               :: [Text]
@@ -50,11 +50,8 @@ sendMail config = renderSendMailSESGlobal sesPayload (mailPayload config)
                           , sesSessionToken = Nothing
                           , sesRegion       = fromMaybe "us-east-1" (region config) }
 
--- 1 - Load first version of the page
--- 2 - Load new version of the page
---     > if different, send mail
--- 3 - Recurse step 2 with latest version of the page
--- TODO Use something like forever instead of recursion?
+-- Repeatedly fetch the content of the page
+-- and check if there are differences with version n - 1
 checkPage :: Config -> Shell ()
 checkPage config = curlPage (url config) >>= recCheckPage config
 
