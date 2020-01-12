@@ -6,7 +6,7 @@ Katt is a small program that fetch an URL at a given interval, and send an email
 It's rather basic, the page is cURL'd and then compared to the version n-1 to check if there are differences.
 
 It uses [AWS SES](https://aws.amazon.com/ses/) to send mails.
-> I tried to use the `eu-central-1` region but got a weird error. It works well with `us-east-1` though.
+> I tried to use the `eu-central-1` region but got without success. It works well with `us-east-1` though.
 
 ## Usage
 
@@ -18,8 +18,9 @@ Then you can use cabal as per usual (`cabal build`, `cabal run`,...).
 
 ## Config
 
-You need to have a config file to be able to run this program.
-You can find it under `config.json.init`.
+You need to have a config file named `config.json` to be able to run this program.
+
+You can find the template under `config.json.init`.
 
 ## License (BSD 3-clause)
 
