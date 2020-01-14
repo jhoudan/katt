@@ -6,12 +6,14 @@ module Main where
 
 import            GHC.Generics (Generic)
 import            Data.Text (Text)
-import            Data.Aeson (FromJSON, decode)
-import            Data.Maybe (fromMaybe)
+import            Data.Maybe (fromMaybe, fromJust)
 import qualified  Data.ByteString.Lazy as B
 import            Data.Text.Lazy (fromStrict)
 import            Data.String.Conversions (cs)
-import            Network.HTTP.Simple (httpBS, getResponseBody, parseRequest)
+
+import            Text.URI as URI
+import            Network.HTTP.Req
+import            Data.Aeson (FromJSON, decode)
 
 import            Control.Monad (when)
 import            Control.Concurrent (threadDelay)
@@ -20,6 +22,7 @@ import            Network.Mail.Mime (simpleMail', Mail, Address(..))
 import            Network.Mail.Mime.SES (renderSendMailSESGlobal, SES(..))
 
 import            System.Environment
+import            System.IO (hPutStr, stderr)
 
 data Config = Config { from             :: Text
                      , to               :: [Text]
@@ -45,12 +48,13 @@ sendMail config = renderSendMailSESGlobal sesPayload (mailPayload config)
                           , sesSessionToken = Nothing
                           , sesRegion       = fromMaybe "us-east-1" (region config) }
 
--- TODO error handling, check response code
 fetchPage :: Text -> IO Text
 fetchPage url' = do
-  request <- parseRequest (cs url')
-  response <- httpBS request
-  return $ cs . getResponseBody $ response
+  uri <- URI.mkURI url'
+  runReq defaultHttpConfig $ do
+    let (parsedUrl, options) = fromJust (useHttpsURI uri)
+    response <- req GET parsedUrl NoReqBody bsResponse options
+    return $ cs . responseBody $ response
 
 -- Repeatedly fetch the content of the page
 -- and check if there are differences with version n - 1
@@ -62,20 +66,24 @@ checkPage config = do
 
 recCheckPage :: Config -> Text -> IO ()
 recCheckPage config basePage = do
-  print "Checking page..."
   page <- fetchPage (url config)
-  when (page /= basePage) (print "Something changed!" >> sendMail config)
+  when (page /= basePage) (sendMail config)
   threadDelay 300000000 -- 5 minutes
   recCheckPage config page
 
-helpMessage :: Text
-helpMessage = "Missing or invalid config file - please refer to the README.md, or to config.json.init for more information"
+helpMessage :: String
+helpMessage = "Error: Missing or invalid config file.\nPlease refer to the README.md, or to config.json.init for more information"
 
--- TODO error handling on args
+getConfig :: [FilePath] -> IO (Maybe Config)
+getConfig [] = return $ Nothing
+getConfig (x:_) = do
+  configRaw <- B.readFile x
+  return $ decode configRaw
+
 main :: IO ()
 main = do
   args <- getArgs
-  configRaw <- B.readFile (args !! 0)
-  case decode configRaw of
-    Nothing     -> print helpMessage
+  mConfig <- getConfig args
+  case mConfig of
+    Nothing     -> hPutStr stderr helpMessage
     Just config -> checkPage config

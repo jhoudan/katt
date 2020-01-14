@@ -1,5 +1,5 @@
-{ mkDerivation, aeson, base, bytestring, http-conduit, mime-mail
-, mime-mail-ses, stdenv, string-conversions, text
+{ mkDerivation, aeson, base, bytestring, mime-mail, mime-mail-ses
+, modern-uri, req, stdenv, string-conversions, text
 }:
 mkDerivation {
   pname = "katt";
@@ -8,7 +8,7 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    aeson base bytestring http-conduit mime-mail mime-mail-ses
+    aeson base bytestring mime-mail mime-mail-ses modern-uri req
     string-conversions text
   ];
   license = "unknown";

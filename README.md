@@ -3,7 +3,7 @@
 Katt is a small program that fetch an URL at a given interval, and send an email if there are changes in the content of the page.
 
 
-It's rather basic, the page is cURL'd and then compared to the version n-1 to check if there are differences.
+It's rather basic, the page is fetched and then compared to the version n-1 to check if there are differences.
 
 It uses [AWS SES](https://aws.amazon.com/ses/) to send mails.
 > I tried to use the `eu-central-1` region, without success. It works well with `us-east-1` though.
