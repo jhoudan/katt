@@ -12,7 +12,7 @@ It uses [AWS SES](https://aws.amazon.com/ses/) to send mails.
 
 Launch a nix shell
 ```sh
-nix-shell -A env release.nix
+nix-shell -A katt.env release.nix
 ```
 Then you can use cabal as per usual (`cabal build`, `cabal run`,...).
 
